@@ -28,5 +28,11 @@ namespace MultiFileRename
         {
             logTextbox.Text += text + "\n";
         }
+        #region UI functions
+        void FormLog_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.Dispose();
+        }
+        #endregion
     }
 }

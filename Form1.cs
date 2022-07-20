@@ -95,12 +95,12 @@ namespace MultiFileRename
         }
         void ButtonOpenLog_Click(object sender, EventArgs e)
         {
-            if (formLog == null)
-            {
-                formLog = new FormLog();
-                ConnectFormLog();
-                formLog.Show(this);
-            }
+            if (formLog != null)
+                return;
+
+            formLog = new FormLog();
+            ConnectFormLog();
+            formLog.Show(this);
         }
         void ButtonReplace_Click(object sender, EventArgs e)
         {
@@ -129,9 +129,16 @@ namespace MultiFileRename
                 TB_Dir.ForeColor = Color.Red;
             }
         }
-        /// <summary>
-        /// Checks if replacement text contains illegal characters as it is being typed
-        /// </summary>
+        void TB_PatternStart_TextChanged(object sender, EventArgs e)
+        {
+            string endPattern = Autocomplete.FillEndPattern(TB_PatternStart.Text);
+            // Only set pattern end if not null
+            if (endPattern == null)
+                return;
+
+            TB_PatternEnd.Text = endPattern;
+        }
+        /// <summary> Checks if replacement text contains illegal characters as it's typed </summary>
         void TB_Replace_TextChanged(object sender, EventArgs e)
         {
             if (replaceType == 0)
@@ -158,9 +165,11 @@ namespace MultiFileRename
             }
             /* Enable replace button
              * In case replacement text contained illegal chars */
-            if (replaceType == 1) ButtonReplace.Enabled = true;
+            if (replaceType == 1) 
+                ButtonReplace.Enabled = true;
             // If re-enabling text replacement checks again for illegal chars
-            else IsReplaceIllegal();
+            else 
+                IsReplaceIllegal();
         }
         /// <summary>
         /// Toggles text boxes, labels, etc. associated with replacing a pattern vs. text
@@ -230,8 +239,11 @@ namespace MultiFileRename
             }
         }
         void CheckboxSpaceRemove_CheckedChanged(object sender, EventArgs e)
+            => removeOrphanedSpace = CheckboxSpaceRemove.Checked;
+        void CheckboxRenameDirs_CheckedChanged(object sender, EventArgs e)
         {
-            removeOrphanedSpace = CheckboxSpaceRemove.Checked;
+            // To-do
+            //io.
         }
         #endregion
         /// <summary> Checks if replacement text contains illegal characters </summary>

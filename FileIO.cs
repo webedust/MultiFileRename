@@ -89,7 +89,7 @@ public class FileIO
         {
             int startI = file.Name.IndexOf(start);
             int endI = file.Name.IndexOf(end);
-            // Do not directly use endI for substring, as it ends at LENGTH
+            // Do not use endI for the substring as it ends at LENGTH
             int endAt = endI - startI;
             // Ensure pattern was found in the file
             if (startI >= 0 && endAt > 0)
@@ -177,7 +177,10 @@ public class FileIO
     /// <param name="file"> The file to be renamed </param>
     /// <param name="rename"> Name the file should be renamed to. </param>
     public void Rename(FileInfo file, string rename)
-    {
-        file.MoveTo(Path.Combine(file.Directory.FullName, rename));
-    }
+        => file.MoveTo(Path.Combine(file.Directory.FullName, rename));
+    /// <summary> Renames the specified directory with newName </summary>
+    /// <param name="dir"> The directory to be renamed </param>
+    /// <param name="rename"> Name the directory should be renamed to. </param>
+    public void Rename(DirectoryInfo dir, string rename)
+        => dir.MoveTo(Path.Combine(dir.FullName, rename));
 }

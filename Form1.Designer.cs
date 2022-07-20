@@ -45,6 +45,7 @@
             this.CheckboxSpaceRemove = new System.Windows.Forms.CheckBox();
             this.ButtonOpenLog = new System.Windows.Forms.Button();
             this.LabelVersion = new System.Windows.Forms.Label();
+            this.CheckboxRenameDirs = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // ButtonReplace
@@ -145,7 +146,9 @@
             this.TB_PatternStart.Name = "TB_PatternStart";
             this.TB_PatternStart.Size = new System.Drawing.Size(114, 29);
             this.TB_PatternStart.TabIndex = 3;
+            this.TB_PatternStart.Text = "[";
             this.TB_PatternStart.Visible = false;
+            this.TB_PatternStart.TextChanged += new System.EventHandler(this.TB_PatternStart_TextChanged);
             // 
             // TB_PatternEnd
             // 
@@ -158,6 +161,7 @@
             this.TB_PatternEnd.Name = "TB_PatternEnd";
             this.TB_PatternEnd.Size = new System.Drawing.Size(114, 29);
             this.TB_PatternEnd.TabIndex = 4;
+            this.TB_PatternEnd.Text = "]";
             this.TB_PatternEnd.Visible = false;
             // 
             // DB_FindType
@@ -238,6 +242,19 @@
             this.LabelVersion.TabIndex = 10;
             this.LabelVersion.Text = "Version: YYYY-MM-DD";
             // 
+            // CheckboxRenameDirs
+            // 
+            this.CheckboxRenameDirs.AutoSize = true;
+            this.CheckboxRenameDirs.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.CheckboxRenameDirs.Location = new System.Drawing.Point(274, 220);
+            this.CheckboxRenameDirs.Name = "CheckboxRenameDirs";
+            this.CheckboxRenameDirs.Size = new System.Drawing.Size(163, 25);
+            this.CheckboxRenameDirs.TabIndex = 11;
+            this.CheckboxRenameDirs.Text = "Rename folders";
+            this.CheckboxRenameDirs.UseVisualStyleBackColor = true;
+            this.CheckboxRenameDirs.Visible = false;
+            this.CheckboxRenameDirs.CheckedChanged += new System.EventHandler(this.CheckboxRenameDirs_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AcceptButton = this.ButtonReplace;
@@ -247,6 +264,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(31)))), ((int)(((byte)(31)))));
             this.ClientSize = new System.Drawing.Size(590, 257);
+            this.Controls.Add(this.CheckboxRenameDirs);
             this.Controls.Add(this.LabelVersion);
             this.Controls.Add(this.ButtonOpenLog);
             this.Controls.Add(this.CheckboxSpaceRemove);
@@ -297,6 +315,7 @@
         private System.Windows.Forms.CheckBox CheckboxSpaceRemove;
         private System.Windows.Forms.Button ButtonOpenLog;
         private System.Windows.Forms.Label LabelVersion;
+        private System.Windows.Forms.CheckBox CheckboxRenameDirs;
     }
 }
 

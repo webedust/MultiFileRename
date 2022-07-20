@@ -64,6 +64,7 @@
             this.MaximumSize = new System.Drawing.Size(717, 292);
             this.Name = "FormLog";
             this.Text = "Multi-File Renamer";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormLog_FormClosed);
             this.Load += new System.EventHandler(this.FormLog_Load);
             this.ResumeLayout(false);
 
