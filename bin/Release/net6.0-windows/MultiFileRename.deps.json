@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "MultiFileRename/1.0.0": {
+        "runtime": {
+          "MultiFileRename.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "MultiFileRename/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -172,7 +172,9 @@
             this.DB_FindType.FormattingEnabled = true;
             this.DB_FindType.Items.AddRange(new object[] {
             "Text",
-            "Pattern"});
+            "Pattern",
+            "Prepend",
+            "Append"});
             this.DB_FindType.Location = new System.Drawing.Point(458, 68);
             this.DB_FindType.MaxDropDownItems = 2;
             this.DB_FindType.Name = "DB_FindType";
@@ -252,7 +254,6 @@
             this.CheckboxRenameDirs.TabIndex = 11;
             this.CheckboxRenameDirs.Text = "Rename folders";
             this.CheckboxRenameDirs.UseVisualStyleBackColor = true;
-            this.CheckboxRenameDirs.Visible = false;
             this.CheckboxRenameDirs.CheckedChanged += new System.EventHandler(this.CheckboxRenameDirs_CheckedChanged);
             // 
             // MainForm

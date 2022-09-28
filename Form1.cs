@@ -9,15 +9,19 @@ namespace MultiFileRename
     public partial class MainForm : Form
     {
         #region Attributes
-        // Variables
-        /* 0: Replace file names using pattern. 
-         * 1: Replace file names using text.
-         * 2: Renumber file names
-        */
-        int replaceType;
+        enum ReplaceTypes
+        {
+            Text = 0,
+            Pattern = 1,
+            Prepend = 2,
+            Append = 3
+        }
+        ReplaceTypes replaceType;
         /* Remove orphaned spaces from start (index 0) of file name
          * Only used on pattern removal. */
         bool removeOrphanedSpace = true;
+        /// <summary> Rename sub-directories rather than files. </summary>
+        bool renameFolders;
         // Default font color used in program
         Color fontColor;
         #endregion
@@ -74,7 +78,7 @@ namespace MultiFileRename
                 // Log notification if the log is currently running
                 if (formLog != null)
                     formLog.WriteLine($"Removing orphaned white space at the start of matching files.");
-                io.RemoveAtIndex(' ', "", 0, TB_Dir.Text);
+                io.RemoveFromFileNameAtIndex(' ', "", 0, TB_Dir.Text);
             }
                 
         }
@@ -89,7 +93,7 @@ namespace MultiFileRename
         /// <summary> "Find Folder" button is pressed </summary>
         void ButtonFolder_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog FolderBrowserDialog = new FolderBrowserDialog();
+            FolderBrowserDialog FolderBrowserDialog = new();
             if (FolderBrowserDialog.ShowDialog() == DialogResult.OK)
                 TB_Dir.Text = FolderBrowserDialog.SelectedPath;
         }
@@ -104,19 +108,33 @@ namespace MultiFileRename
         }
         void ButtonReplace_Click(object sender, EventArgs e)
         {
-            Console.WriteLine($"replaceType = {replaceType}");
             try
             {
                 switch (replaceType)
                 {
-                    case 0:
-                        io.ReplaceAllFileNames(TB_Find.Text, TB_Replace.Text, TB_Dir.Text);
+                    case ReplaceTypes.Text:
+                        if (renameFolders)
+                            io.ReplaceAllDirectories(TB_Find.Text, TB_Replace.Text, TB_Dir.Text);
+                        else
+                            io.ReplaceAllFileNames(TB_Find.Text, TB_Replace.Text, TB_Dir.Text);
                         break;
-                    case 1:
-                        io.RemoveFromFilesNamesOnPattern(TB_PatternStart.Text, TB_PatternEnd.Text, TB_Dir.Text);
+                    case ReplaceTypes.Pattern:
+                        if (renameFolders)
+                            io.RemoveFromDirectoryNamesOnPattern(TB_PatternStart.Text, TB_PatternEnd.Text, TB_Dir.Text);
+                        else
+                            io.RemoveFromFilesNamesOnPattern(TB_PatternStart.Text, TB_PatternEnd.Text, TB_Dir.Text);
                         break;
-                    case 2:
-                        io.RenumberFiles(TB_Find.Text, TB_Dir.Text);
+                    case ReplaceTypes.Prepend:
+                        if (renameFolders)
+                            io.PrependToDirectory(TB_Replace.Text, TB_Dir.Text);
+                        else
+                            io.PrependToFile(TB_Replace.Text, TB_Dir.Text);
+                        break;
+                    case ReplaceTypes.Append:
+                        if (renameFolders)
+                            io.AppendToDirectory(TB_Replace.Text, TB_Dir.Text);
+                        else
+                            io.AppendToFile(TB_Replace.Text, TB_Dir.Text);
                         break;
                     default:
                         break;
@@ -147,25 +165,11 @@ namespace MultiFileRename
         /// <summary> Find Type Dropdown value is changed </summary>
         void DB_FindType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch (DB_FindType.SelectedIndex)
-            {
-                case 0: // Find & Replace
-                    ToggleReplacePatternComponents(0);
-                    break;
-                case 1: // Pattern find
-                    ToggleReplacePatternComponents(1);
-                    break;
-                case 2: // Renumber
-                    // Uses "Find & Replace" components
-                    ToggleReplacePatternComponents(2);
-                    break;
-                default: // Default to "Find & Replace"
-                    ToggleReplacePatternComponents(0);
-                    break;
-            }
+            ToggleReplacePatternComponents((ReplaceTypes)DB_FindType.SelectedIndex);
+
             /* Enable replace button
              * In case replacement text contained illegal chars */
-            if (replaceType == 1) 
+            if (replaceType == ReplaceTypes.Pattern) 
                 ButtonReplace.Enabled = true;
             // If re-enabling text replacement checks again for illegal chars
             else 
@@ -175,21 +179,20 @@ namespace MultiFileRename
         /// Toggles text boxes, labels, etc. associated with replacing a pattern vs. text
         /// between True or False based on the state parameter
         /// </summary>
-        /// <param name="renameType">0: Find & Replace, 1: Pattern, 2: Renumber</param>
-        void ToggleReplacePatternComponents(int renameType)
+        void ToggleReplacePatternComponents(ReplaceTypes replaceDropdownVal)
         {
             // Variables
             bool state;
 
 
             // Find & Replace / Pattern
-            if (renameType < 2)
-                state = Utils.IntToBool(renameType);
+            if ((int)replaceDropdownVal < 2)
+                state = Utils.IntToBool((int)replaceDropdownVal);
             // Assumes Renumber if higher than 2, therefore false
             else 
                 state = false;
 
-            replaceType = renameType;
+            replaceType = replaceDropdownVal;
 
             TB_PatternStart.Visible = state;
             TB_PatternEnd.Visible = state;
@@ -220,31 +223,15 @@ namespace MultiFileRename
             CheckboxSpaceRemove.Enabled = state;
 
             // Change text on Replace button between Replace/Remove based on context
-            if (state) ButtonReplace.Text = "Remove";
-            else ButtonReplace.Text = "Replace";
-
-            // Renumber re-uses components as Find & Replace but not all
-            // Therefore it runs after
-            if (renameType == 2)
-            {
-                LabelFind.Text = "Start at";
-
-                TB_Replace.Visible = false;
-                TB_Replace.Enabled = false;
-
-                LabelReplace.Visible = false;
-                LabelReplace.Enabled = false;
-
-                ButtonReplace.Text = "Renumber";
-            }
+            if (state) 
+                ButtonReplace.Text = "Remove";
+            else 
+                ButtonReplace.Text = "Replace";
         }
         void CheckboxSpaceRemove_CheckedChanged(object sender, EventArgs e)
             => removeOrphanedSpace = CheckboxSpaceRemove.Checked;
         void CheckboxRenameDirs_CheckedChanged(object sender, EventArgs e)
-        {
-            // To-do
-            //io.
-        }
+            => renameFolders = CheckboxRenameDirs.Checked;
         #endregion
         /// <summary> Checks if replacement text contains illegal characters </summary>
         void IsReplaceIllegal()
