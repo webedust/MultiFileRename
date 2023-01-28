@@ -2,21 +2,20 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using Dustin;
 
 namespace MultiFileRename
 {
     public partial class MainForm : Form
     {
         #region Attributes
-        enum ReplaceTypes
+        enum RenameOperations
         {
             Text = 0,
             Pattern = 1,
             Prepend = 2,
             Append = 3
         }
-        ReplaceTypes replaceType;
+        RenameOperations renameOperation;
         /* Remove orphaned spaces from start (index 0) of file name
          * Only used on pattern removal. */
         bool removeOrphanedSpace = true;
@@ -110,27 +109,27 @@ namespace MultiFileRename
         {
             try
             {
-                switch (replaceType)
+                switch (renameOperation)
                 {
-                    case ReplaceTypes.Text:
+                    case RenameOperations.Text:
                         if (renameFolders)
                             io.ReplaceAllDirectories(TB_Find.Text, TB_Replace.Text, TB_Dir.Text);
                         else
                             io.ReplaceAllFileNames(TB_Find.Text, TB_Replace.Text, TB_Dir.Text);
                         break;
-                    case ReplaceTypes.Pattern:
+                    case RenameOperations.Pattern:
                         if (renameFolders)
                             io.RemoveFromDirectoryNamesOnPattern(TB_PatternStart.Text, TB_PatternEnd.Text, TB_Dir.Text);
                         else
                             io.RemoveFromFilesNamesOnPattern(TB_PatternStart.Text, TB_PatternEnd.Text, TB_Dir.Text);
                         break;
-                    case ReplaceTypes.Prepend:
+                    case RenameOperations.Prepend:
                         if (renameFolders)
                             io.PrependToDirectory(TB_Replace.Text, TB_Dir.Text);
                         else
                             io.PrependToFile(TB_Replace.Text, TB_Dir.Text);
                         break;
-                    case ReplaceTypes.Append:
+                    case RenameOperations.Append:
                         if (renameFolders)
                             io.AppendToDirectory(TB_Replace.Text, TB_Dir.Text);
                         else
@@ -159,40 +158,79 @@ namespace MultiFileRename
         /// <summary> Checks if replacement text contains illegal characters as it's typed </summary>
         void TB_Replace_TextChanged(object sender, EventArgs e)
         {
-            if (replaceType == 0)
+            if (renameOperation == 0)
                 IsReplaceIllegal();
         }
         /// <summary> Find Type Dropdown value is changed </summary>
         void DB_FindType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ToggleReplacePatternComponents((ReplaceTypes)DB_FindType.SelectedIndex);
+            ToggleReplacePatternComponents((RenameOperations)DB_FindType.SelectedIndex);
 
             /* Enable replace button
              * In case replacement text contained illegal chars */
-            if (replaceType == ReplaceTypes.Pattern) 
+            if (renameOperation == RenameOperations.Pattern) 
                 ButtonReplace.Enabled = true;
             // If re-enabling text replacement checks again for illegal chars
             else 
                 IsReplaceIllegal();
         }
-        /// <summary>
-        /// Toggles text boxes, labels, etc. associated with replacing a pattern vs. text
-        /// between True or False based on the state parameter
-        /// </summary>
-        void ToggleReplacePatternComponents(ReplaceTypes replaceDropdownVal)
+        /// <summary> Toggles UI controls based on the operation taking place. </summary>
+        void ToggleReplacePatternComponents(RenameOperations dropdownValue)
         {
-            // Variables
-            bool state;
+            switch (dropdownValue)
+            {
+                case RenameOperations.Text:
+                    SetUIForReplacingText();
+                    break;
+                case RenameOperations.Pattern:
+                    SetUIForPatternRemoval();
+                    break;
+                case RenameOperations.Prepend:
+                    SetUIForPrependingText();
+                    break;
+                case RenameOperations.Append:
+                    SetUIForAppendingText();
+                    break;
+            }
 
+            renameOperation = dropdownValue;
+        }
+        void SetUIForReplacingText()
+        {
+            TogglePatternRemovalControls(false);
+            ToggleReplacementControls(true);
 
-            // Find & Replace / Pattern
-            if ((int)replaceDropdownVal < 2)
-                state = Utils.IntToBool((int)replaceDropdownVal);
-            // Assumes Renumber if higher than 2, therefore false
-            else 
-                state = false;
+            LabelFind.Text = "Find";
+            const string replaceText = "Replace";
+            LabelReplace.Text = replaceText;
+            ButtonReplace.Text = replaceText;
+        }
+        void ToggleReplacementControls(bool state)
+        {
+            TB_Find.Visible = state;
+            TB_Find.Enabled = state;
 
-            replaceType = replaceDropdownVal;
+            // Replace textbox must be disabled because it is not usable in pattern removal
+            TB_Replace.Visible = state;
+            TB_Replace.Enabled = state;
+
+            LabelFind.Visible = state;
+            LabelFind.Enabled = state;
+
+            LabelReplace.Visible = state;
+            LabelReplace.Enabled = state;
+        }
+        void SetUIForPatternRemoval()
+        {
+            ToggleReplacementControls(false);
+            TogglePatternRemovalControls(true);
+
+            ButtonReplace.Text = "Remove";
+        }
+        void TogglePatternRemovalControls(bool state)
+        {
+            LabelFind.Visible = state;
+            LabelFind.Enabled = state;
 
             TB_PatternStart.Visible = state;
             TB_PatternEnd.Visible = state;
@@ -201,32 +239,40 @@ namespace MultiFileRename
             TB_PatternEnd.Enabled = state;
 
             Lb_PatternStart.Visible = state;
-            Lb_PatternEnd.Visible = state;
-
             Lb_PatternStart.Enabled = state;
+
+            Lb_PatternEnd.Visible = state;
             Lb_PatternEnd.Enabled = state;
-
-            // Standard text replace components
-            LabelFind.Text = "Find";
-
-            TB_Find.Visible = !state;
-            TB_Find.Enabled = !state;
-
-            // Replace textbox must be disabled because it is not usable in pattern removal
-            TB_Replace.Visible = !state;
-            TB_Replace.Enabled = !state;
-
-            LabelReplace.Visible = !state;
-            LabelReplace.Enabled = !state;
 
             CheckboxSpaceRemove.Visible = state;
             CheckboxSpaceRemove.Enabled = state;
+        }
+        /// <summary> Sets UI controls shared between text adding operations (prepending, appending). </summary>
+        void SetUIForAddingText()
+        {
+            TogglePatternRemovalControls(false);
+            ToggleReplacementControls(true);
 
-            // Change text on Replace button between Replace/Remove based on context
-            if (state) 
-                ButtonReplace.Text = "Remove";
-            else 
-                ButtonReplace.Text = "Replace";
+            LabelFind.Visible = false;
+            LabelFind.Enabled = false;
+
+            TB_Find.Visible = false;
+            TB_Find.Enabled = false;
+
+            TB_Replace.Visible = true;
+            TB_Replace.Visible = true;
+
+            ButtonReplace.Text = "Add Text";
+        }
+        void SetUIForPrependingText()
+        {
+            SetUIForAddingText();
+            LabelReplace.Text = "Prepend";
+        }
+        void SetUIForAppendingText()
+        {
+            SetUIForAddingText();
+            LabelReplace.Text = "Append";
         }
         void CheckboxSpaceRemove_CheckedChanged(object sender, EventArgs e)
             => removeOrphanedSpace = CheckboxSpaceRemove.Checked;
