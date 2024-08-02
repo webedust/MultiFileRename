@@ -46,6 +46,7 @@
             ButtonOpenLog = new System.Windows.Forms.Button();
             LabelVersion = new System.Windows.Forms.Label();
             CheckboxRenameDirs = new System.Windows.Forms.CheckBox();
+            ButtonSwap = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
             // ButtonReplace
@@ -53,7 +54,7 @@
             ButtonReplace.BackColor = System.Drawing.Color.FromArgb(72, 72, 72);
             ButtonReplace.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             ButtonReplace.ForeColor = System.Drawing.SystemColors.Control;
-            ButtonReplace.Location = new System.Drawing.Point(104, 180);
+            ButtonReplace.Location = new System.Drawing.Point(104, 182);
             ButtonReplace.Name = "ButtonReplace";
             ButtonReplace.Size = new System.Drawing.Size(125, 35);
             ButtonReplace.TabIndex = 8;
@@ -90,18 +91,18 @@
             TB_Find.MaxLength = 1000;
             TB_Find.Name = "TB_Find";
             TB_Find.Size = new System.Drawing.Size(348, 29);
-            TB_Find.TabIndex = 3;
+            TB_Find.TabIndex = 2;
             // 
             // TB_Replace
             // 
             TB_Replace.BackColor = System.Drawing.Color.FromArgb(16, 16, 16);
             TB_Replace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             TB_Replace.ForeColor = System.Drawing.SystemColors.Control;
-            TB_Replace.Location = new System.Drawing.Point(104, 127);
+            TB_Replace.Location = new System.Drawing.Point(104, 142);
             TB_Replace.MaxLength = 1000;
             TB_Replace.Name = "TB_Replace";
             TB_Replace.Size = new System.Drawing.Size(348, 29);
-            TB_Replace.TabIndex = 6;
+            TB_Replace.TabIndex = 3;
             TB_Replace.TextChanged += TB_Replace_TextChanged;
             // 
             // LabelFind
@@ -116,7 +117,7 @@
             // LabelReplace
             // 
             LabelReplace.AutoSize = true;
-            LabelReplace.Location = new System.Drawing.Point(12, 129);
+            LabelReplace.Location = new System.Drawing.Point(12, 144);
             LabelReplace.Name = "LabelReplace";
             LabelReplace.Size = new System.Drawing.Size(81, 21);
             LabelReplace.TabIndex = 1;
@@ -130,7 +131,7 @@
             ButtonFolder.Location = new System.Drawing.Point(458, 7);
             ButtonFolder.Name = "ButtonFolder";
             ButtonFolder.Size = new System.Drawing.Size(125, 35);
-            ButtonFolder.TabIndex = 2;
+            ButtonFolder.TabIndex = 5;
             ButtonFolder.Text = "Browse";
             ButtonFolder.UseVisualStyleBackColor = false;
             ButtonFolder.Click += ButtonFolder_Click;
@@ -176,7 +177,7 @@
             DB_FindType.MaxDropDownItems = 2;
             DB_FindType.Name = "DB_FindType";
             DB_FindType.Size = new System.Drawing.Size(125, 29);
-            DB_FindType.TabIndex = 5;
+            DB_FindType.TabIndex = 6;
             DB_FindType.Text = "Text";
             DB_FindType.SelectedIndexChanged += DB_FindType_SelectedIndexChanged;
             // 
@@ -222,7 +223,7 @@
             ButtonOpenLog.BackColor = System.Drawing.Color.FromArgb(72, 72, 72);
             ButtonOpenLog.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             ButtonOpenLog.ForeColor = System.Drawing.SystemColors.Control;
-            ButtonOpenLog.Location = new System.Drawing.Point(12, 180);
+            ButtonOpenLog.Location = new System.Drawing.Point(12, 182);
             ButtonOpenLog.Name = "ButtonOpenLog";
             ButtonOpenLog.Size = new System.Drawing.Size(60, 35);
             ButtonOpenLog.TabIndex = 7;
@@ -253,6 +254,20 @@
             CheckboxRenameDirs.UseVisualStyleBackColor = true;
             CheckboxRenameDirs.CheckedChanged += CheckboxRenameDirs_CheckedChanged;
             // 
+            // ButtonSwap
+            // 
+            ButtonSwap.BackColor = System.Drawing.Color.FromArgb(72, 72, 72);
+            ButtonSwap.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            ButtonSwap.Font = new System.Drawing.Font("Liberation Sans", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            ButtonSwap.ForeColor = System.Drawing.SystemColors.Control;
+            ButtonSwap.Location = new System.Drawing.Point(17, 102);
+            ButtonSwap.Name = "ButtonSwap";
+            ButtonSwap.Size = new System.Drawing.Size(36, 36);
+            ButtonSwap.TabIndex = 11;
+            ButtonSwap.Text = "↑↓";
+            ButtonSwap.UseVisualStyleBackColor = false;
+            ButtonSwap.Click += ButtonSwap_Click;
+            // 
             // MainForm
             // 
             AcceptButton = ButtonReplace;
@@ -262,6 +277,7 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.Color.FromArgb(31, 31, 31);
             ClientSize = new System.Drawing.Size(590, 257);
+            Controls.Add(ButtonSwap);
             Controls.Add(CheckboxRenameDirs);
             Controls.Add(LabelVersion);
             Controls.Add(ButtonOpenLog);
@@ -313,6 +329,7 @@
         private System.Windows.Forms.Button ButtonOpenLog;
         private System.Windows.Forms.Label LabelVersion;
         private System.Windows.Forms.CheckBox CheckboxRenameDirs;
+        private System.Windows.Forms.Button ButtonSwap;
     }
 }
 

@@ -64,22 +64,19 @@ namespace MultiFileRename
         #region Events
         void Io_OnRenameComplete(object sender, EventArgs e)
         {
-            // Output the number of files renamed
             if (formLog != null)
                 formLog.WriteLine($"{io.FilesRenamedInOperation} files renamed");
         }
         /// <summary> Called whenever the FileIO.OnReplaceAll event is invoked. </summary>
         void IO_OnReplaceAllComplete(object sender, EventArgs e)
         {
-            // Remove orphaned spaces if specified.
-            if (removeOrphanedSpace)
-            {
-                // Log notification if the log is currently running
-                if (formLog != null)
-                    formLog.WriteLine($"Removing orphaned white space at the start of matching files.");
-                io.RemoveFromFileNameAtIndex(' ', "", 0, TB_Dir.Text);
-            }
-                
+            if (!removeOrphanedSpace)
+                return;
+
+            // Log notification if the log is currently running
+            if (formLog != null)
+                formLog.WriteLine($"Removing orphaned white space at the start of matching files.");
+            io.RemoveFromFileNameAtIndex(' ', "", 0, TB_Dir.Text);
         }
 
         void FormLog_FormClosed(object sender, FormClosedEventArgs e)
@@ -104,6 +101,13 @@ namespace MultiFileRename
             formLog = new FormLog();
             ConnectFormLog();
             formLog.Show(this);
+        }
+        void ButtonSwap_Click(object sender, EventArgs e)
+        {
+            string originalFindText = TB_Find.Text;
+            string originalReplaceText = TB_Replace.Text;
+            TB_Find.Text = originalReplaceText;
+            TB_Replace.Text = originalFindText;
         }
         void ButtonReplace_Click(object sender, EventArgs e)
         {
@@ -168,10 +172,10 @@ namespace MultiFileRename
 
             /* Enable replace button
              * In case replacement text contained illegal chars */
-            if (renameOperation == RenameOperations.Pattern) 
+            if (renameOperation == RenameOperations.Pattern)
                 ButtonReplace.Enabled = true;
             // If re-enabling text replacement checks again for illegal chars
-            else 
+            else
                 IsReplaceIllegal();
         }
         /// <summary> Toggles UI controls based on the operation taking place. </summary>
@@ -201,6 +205,10 @@ namespace MultiFileRename
             ToggleReplacementControls(true);
 
             LabelFind.Text = "Find";
+
+            ButtonSwap.Visible = true;
+            ButtonSwap.Enabled = true;
+
             const string replaceText = "Replace";
             LabelReplace.Text = replaceText;
             ButtonReplace.Text = replaceText;
@@ -224,6 +232,9 @@ namespace MultiFileRename
         {
             ToggleReplacementControls(false);
             TogglePatternRemovalControls(true);
+
+            ButtonSwap.Visible = false;
+            ButtonSwap.Enabled = false;
 
             ButtonReplace.Text = "Remove";
         }
@@ -258,6 +269,9 @@ namespace MultiFileRename
 
             TB_Find.Visible = false;
             TB_Find.Enabled = false;
+
+            ButtonSwap.Visible = false;
+            ButtonSwap.Enabled = false;
 
             TB_Replace.Visible = true;
             TB_Replace.Visible = true;
