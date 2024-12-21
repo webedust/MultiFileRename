@@ -31,4 +31,4 @@ Alternatively, the "Replace" field can be left blank in order to remove certain 
 Created by Dustin Weber in C# Windows Forms
 
 ## License
-Multi-File Renamer is licensed under the [MIT License.](LICENSE.md)
+Multi-File Renamer is licensed under the [MIT License.](LICENSE)
